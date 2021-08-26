@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface MySharesRepository<MysharesModel> extends JpaRepository<MySharesModel, Integer> {
 	
-	List<MySharesModel> getUserShares(String email);
+	//List<MySharesModel> getUserShares(String email);
 	
 	
 
