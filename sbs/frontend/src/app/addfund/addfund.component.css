@@ -1,0 +1,16 @@
+  
+::placeholder {
+    color: coral;
+    font-size: 0.8rem;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+#virtualMoney {
+    margin: 10px;
+}
+
+div {
+    align-items: center;
+    text-align: center;
+}
