@@ -1,0 +1,10 @@
+.container
+{
+    align-items: center;
+    text-align: center;
+}
+
+ .grid-cell-centered
+ {
+    text-align: center; 
+ }
