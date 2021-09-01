@@ -1,5 +1,7 @@
 package com.example.demo.controllers;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,9 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.models.Company;
 import com.example.demo.models.MySharesModel;
+import com.example.demo.models.UserActivity;
 import com.example.demo.models.UserModel;
 import com.example.demo.repository.CompanyRepository;
 import com.example.demo.repository.MySharesRepository;
+import com.example.demo.repository.UserActivityRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.WatchListRepository;
 
@@ -40,9 +44,17 @@ public class MySharesController {
 	@Autowired
 	private MySharesRepository mySharesRepository;
 	
+	@Autowired
+	private UserActivityRepository userActivityRepository;
+	@Autowired
+	private WatchListRepository watchListRepository;
 	
-	
-	
+	public LocalDateTime getDateAndTime()
+	{
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+		   LocalDateTime now = LocalDateTime.now();
+		  return now;
+	}
 	
 	@GetMapping("/my-share")
 	public List<MySharesModel> myShare(@RequestParam("email") String email)
@@ -59,6 +71,7 @@ public class MySharesController {
 				{
 					System.out.print(ms);
 					myShares.add(ms);
+					
 				}
 			}
 		}
@@ -86,7 +99,7 @@ public class MySharesController {
 		List<Company> allCompany = (List<Company>)companyRepository.findAll();
 		List<Company> company = new ArrayList<Company>();
 		
-		
+		UserActivity u1=new UserActivity();
 				
 		try
 		{
@@ -138,6 +151,16 @@ public class MySharesController {
 				user.get(0).setAmount_left(currentAmount);
 				userRepository.save(user.get(0));
 				
+				
+				u1.setItem("Stocks");
+				u1.setRemarks("bought "+ qty +" stocks of " + company.get(0).getName()+" at price "+company.get(0).getCurrent_rate());
+				u1.setTime(getDateAndTime());
+				u1.setUserid(email);
+				u1.setAction("buy stock");
+				userActivityRepository.save(u1);
+				
+				
+				
 				map.put("status", "success");
 				return map;
 			}
@@ -154,6 +177,11 @@ public class MySharesController {
 				int volume=company.get(0).getVolume()-qty;
 				company.get(0).setVolume(volume);
 				companyRepository.save(company.get(0));
+				u1.setItem("Stocks");
+				u1.setRemarks("bought "+company.get(0).getName());
+				u1.setTime(getDateAndTime());
+				u1.setUserid(email);
+				userActivityRepository.save(u1);
 			}
 		}
 		catch(Exception e)		
@@ -181,6 +209,8 @@ public class MySharesController {
 		
 		List<Company> allCompany = (List<Company>)companyRepository.findAll();
 		List<Company> company = new ArrayList<Company>();
+		
+		UserActivity u1=new UserActivity();
 		
 		try
 		{
@@ -231,6 +261,14 @@ public class MySharesController {
 			}
 			user.get(0).setAmount_left(currentAmount);
 			userRepository.save(user.get(0));
+			
+			u1.setItem("Stocks");
+			u1.setRemarks("sold "+ qty +" stocks of " + company.get(0).getName()+" at price "+company.get(0).getCurrent_rate());
+			u1.setTime(getDateAndTime());
+			u1.setUserid(email);
+			u1.setAction("sell stock");
+			userActivityRepository.save(u1);
+	
 			
 			map.put("status", "success");
 			return map;
